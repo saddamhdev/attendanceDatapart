@@ -277,6 +277,19 @@ public class AttendanceService {
             sh.setMargin(Sheet.TopMargin, 0.5);
             sh.setMargin(Sheet.BottomMargin, 0.5);
 
+// Autosize with padding to avoid "#######"
+            for (int c = 0; c < colCount; c++) {
+                sh.autoSizeColumn(c, true);
+                int currentWidth = sh.getColumnWidth(c);
+                // Add ~2 characters worth of padding
+                sh.setColumnWidth(c, currentWidth + 512);
+            }
+
+// Optional: shrink slightly if still too wide for A4
+            sh.setAutobreaks(true);
+            sh.getPrintSetup().setScale((short)90); // 90% scaling
+
+
             // Autosize columns
             for (int c = 0; c < colCount; c++) sh.autoSizeColumn(c, true);
 
