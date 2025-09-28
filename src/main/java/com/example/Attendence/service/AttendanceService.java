@@ -277,21 +277,22 @@ public class AttendanceService {
             sh.setMargin(Sheet.TopMargin, 0.5);
             sh.setMargin(Sheet.BottomMargin, 0.5);
 
-// Autosize with padding to avoid "#######"
-            for (int c = 0; c < colCount; c++) {
-                sh.autoSizeColumn(c, true);
-                int currentWidth = sh.getColumnWidth(c);
-                // Add ~2 characters worth of padding
-                sh.setColumnWidth(c, currentWidth + 512);
+// ✅ Only adjust the first column (Date)
+            sh.autoSizeColumn(0, true);
+            int currentWidth = sh.getColumnWidth(0);
+// Set a minimum width ~20 characters if needed
+            int minWidth = 20 * 256;
+            if (currentWidth < minWidth) {
+                sh.setColumnWidth(0, minWidth);
+            } else {
+                sh.setColumnWidth(0, currentWidth + 512); // add small padding
             }
 
-// Optional: shrink slightly if still too wide for A4
-            sh.setAutobreaks(true);
-            sh.getPrintSetup().setScale((short)90); // 90% scaling
-
-
-            // Autosize columns
-            for (int c = 0; c < colCount; c++) sh.autoSizeColumn(c, true);
+// (optional) auto-size other columns normally
+            for (int c = 1; c < colCount; c++) {
+                sh.autoSizeColumn(c, true);
+            }
+            
 
             // ======= Write response =======
             String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
