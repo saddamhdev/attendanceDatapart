@@ -252,7 +252,14 @@ public class AttendanceService {
 
 
             // Total hours (sum duration column "Total Time in Day" = index 8)
+            Row gapRow1 = sh.createRow(rowIdx++);
+            gapRow1.setHeightInPoints(6);
 
+            Row gapRow2 = sh.createRow(rowIdx++);
+            gapRow2.setHeightInPoints(6);
+
+            Row gapRow3 = sh.createRow(rowIdx++);
+            gapRow3.setHeightInPoints(6);
 
             // ======= Signature row (same line: COO | OEO) =======
             rowIdx++; // spacer (optional)
@@ -292,7 +299,7 @@ public class AttendanceService {
             for (int c = 1; c < colCount; c++) {
                 sh.autoSizeColumn(c, true);
             }
-            
+
 
             // ======= Write response =======
             String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
