@@ -252,17 +252,10 @@ public class AttendanceService {
 
 
             // Total hours (sum duration column "Total Time in Day" = index 8)
-            Row gapRow1 = sh.createRow(rowIdx++);
-            gapRow1.setHeightInPoints(6);
 
-            Row gapRow2 = sh.createRow(rowIdx++);
-            gapRow2.setHeightInPoints(6);
-
-            Row gapRow3 = sh.createRow(rowIdx++);
-            gapRow3.setHeightInPoints(6);
 
             // ======= Signature row (same line: COO | OEO) =======
-            rowIdx++; // spacer (optional)
+            rowIdx+=5; // spacer (optional)
             Row sig = sh.createRow(rowIdx++);
             sig.setHeightInPoints(28); // room for handwriting feel
 
