@@ -505,7 +505,7 @@ public class UserAtAGlanceService {
                     headerCellStyle.setFillForegroundColor(new XSSFColor(java.awt.Color.decode("#B7E1CD"), null));
                 }
                 else{
-                    cell.setCellValue("Extra Time");
+                    cell.setCellValue("Extra Day");
                     headerCellStyle.setFillForegroundColor(new XSSFColor(java.awt.Color.decode("#38761D"), null));
                 }
 
@@ -1204,6 +1204,8 @@ public class UserAtAGlanceService {
             userAtAGlance.setExtraTime(extratimec);
             userAtAGlance.setEntryInTime(intimec);
             userAtAGlance.setEntryLate(latetimec);
+            userAtAGlance.setTotalExtraTime(totalextradurationc.toHoursPart() + ":" + totalextradurationc.toMinutesPart());
+
         }
 
         return userAtAGlance;
@@ -1313,6 +1315,7 @@ public class UserAtAGlanceService {
                 long averageSeconds = timeInSecond / presentdayc;
                 durationc = Duration.ofSeconds(averageSeconds);
                 totalextradurationc = Duration.ofSeconds(totalExtraTime);
+                System.out.println(totalextradurationc);
             }
 
             userAtAGlance.setAvgTime(durationc.toHoursPart() + ":" + durationc.toMinutesPart());
@@ -1324,6 +1327,7 @@ public class UserAtAGlanceService {
             userAtAGlance.setExtraTime(extratimec);
             userAtAGlance.setEntryInTime(intimec);
             userAtAGlance.setEntryLate(latetimec);
+            userAtAGlance.setTotalExtraTime("67");
         }
 
         return userAtAGlance;
