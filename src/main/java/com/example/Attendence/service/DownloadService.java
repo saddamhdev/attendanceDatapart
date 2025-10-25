@@ -166,7 +166,7 @@ public class DownloadService {
         String[] headers = {
                 "Employee ID", "Name", "Office Day", "Total Present", "Avg Time",
                 "Leave", "Absent", "Holiday", "Short Time", "Maintain Office Duration",
-                "Extra Time", "Entry In Time", "Entry Late", "Entry Total Late",
+                "Extra Days", "Entry In Time", "Entry Late", "Entry Total Late",
                 "Exit Ok", "Exit Early", "Total Extra Time", "Office Out Time",
                 "Office In Time", "Total Time"
         };
@@ -441,7 +441,7 @@ public class DownloadService {
                         startDate1
                         ,
                         endDate1,f.getIdNumber(),f.getName(),Integer.toString(officedayc.get()),Integer.toString(presentdayc.get()),
-                        durationc.get().toHoursPart()+":"+ durationc.get().toMinutesPart(),
+                        durationc.get().toHoursPart()+":"+ formatTwoDigit(durationc.get().toMinutesPart()),
                         Integer.toString(leavedayc.get()),
                         Integer.toString(absentdayc.get()),
                         Integer.toString(holydayc.get()),
@@ -450,13 +450,13 @@ public class DownloadService {
                         Integer.toString(extratimec.get()),
                         Integer.toString(intimec.get()),
                         Integer.toString(latetimec.get()),
-                        totallatedurationc.get().toHoursPart()+":"+ totallatedurationc.get().toMinutesPart(),
+                        totallatedurationc.get().toHoursPart()+":"+ formatTwoDigit(totallatedurationc.get().toMinutesPart()),
                         Integer.toString(presentdayc.get()),
                         Integer.toString(earlytimec.get()),
-                        totalextradurationc.get().toHoursPart()+":"+ totalextradurationc.get().toMinutesPart(),
-                        outtimeduration.toHours() + ":" + outtimeduration.toMinutesPart(),
-                        intotaltimec.get().toHours()+":"+ intotaltimec.get().toMinutesPart(),
-                        totaltimecc.get().toHours()+":"+ totaltimecc.get().toMinutesPart()));
+                        totalextradurationc.get().toHoursPart()+":"+ formatTwoDigit(totalextradurationc.get().toMinutesPart()),
+                        outtimeduration.toHours() + ":" + formatTwoDigit(outtimeduration.toMinutesPart()),
+                        intotaltimec.get().toHours()+":"+ formatTwoDigit(intotaltimec.get().toMinutesPart()),
+                        totaltimecc.get().toHours()+":"+ formatTwoDigit(totaltimecc.get().toMinutesPart())));
             }
 
         });
@@ -496,6 +496,10 @@ public class DownloadService {
         });
         return  resultList;
     }
+    public static String formatTwoDigit(int minutePart) {
+        return String.format("%02d", minutePart);
+    }
+
     public static String checkTimeDifference(Duration duration) {
 
         long hours = duration.toHoursPart();
