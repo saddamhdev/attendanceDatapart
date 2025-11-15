@@ -60,7 +60,7 @@ public class DownloadService {
     private ThreadLocal<Long> timeInSecondOfOutTime = ThreadLocal.withInitial(() -> 0L);
     private ThreadLocal<Double> outtimec = ThreadLocal.withInitial(() -> 0.0);
     private ThreadLocal<Boolean> result = ThreadLocal.withInitial(() -> false);
-
+    int maxofficeDay=0;
 
 
     List<Employee> employeeList;
@@ -457,11 +457,17 @@ public class DownloadService {
                         outtimeduration.toHours() + ":" + formatTwoDigit(outtimeduration.toMinutesPart()),
                         intotaltimec.get().toHours()+":"+ formatTwoDigit(intotaltimec.get().toMinutesPart()),
                         totaltimecc.get().toHours()+":"+ formatTwoDigit(totaltimecc.get().toMinutesPart())));
+                if(officedayc.get()>maxofficeDay)
+                {
+                    maxofficeDay=officedayc.get();
+                }
             }
 
         });
 
-
+         resultList.forEach(e->{
+             e.setOfficeDay(Integer.toString(maxofficeDay));
+         });
         // i want to rearrange resultList by IdNumber of attendanceData . compare with employeelist employeeId
 // Rearrange the resultList based on employeeList order
         resultList.sort(new Comparator<AllEmployeeAttendanceData>() {
