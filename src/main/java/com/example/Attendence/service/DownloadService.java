@@ -4,6 +4,7 @@ import com.example.Attendence.model.*;
 import com.example.Attendence.repository.AttendanceDataRepository;
 import com.example.Attendence.repository.GlobalSettingRepository;
 import com.example.Attendence.repository.LocalSettingRepository;
+import com.example.Attendence.repository.OfficeDayCalRepository;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.*;
@@ -65,6 +66,8 @@ public class DownloadService {
 
     List<Employee> employeeList;
 
+    @Autowired
+    OfficeDayCalRepository officeDayCalRepository;
     @Autowired
     UserService userService;
 
@@ -235,10 +238,15 @@ public class DownloadService {
 
     public List<AllEmployeeAttendanceData> getAllEmployeeAttendanceData(String startDate1, String endDate1,String header){
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date1 = LocalDate.parse(startDate1, formatter);
+        LocalDate date2 = LocalDate.parse(endDate1, formatter);
+
+        maxofficeDay=officeDayCalRepository.countByEntryDateBetweenAndStatus( date1.minusDays(1),date2.plusDays(1),"Office");
+
         List<AllEmployeeAttendanceData> resultList=new ArrayList<>();
         // List<AttendanceData> dataList=attendanceDataRepository.findByUpdateStatusAndEntryDateBetween("1",startDate1,endDate1);
         employeeList=userService.employeeList(header);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // Convert to ChronoLocalDate
         ChronoLocalDate startDate = LocalDate.parse(startDate1, formatter);
@@ -440,7 +448,10 @@ public class DownloadService {
                 resultList.add(new AllEmployeeAttendanceData(
                         startDate1
                         ,
-                        endDate1,f.getIdNumber(),f.getName(),Integer.toString(officedayc.get()),Integer.toString(presentdayc.get()),
+                        endDate1,f.getIdNumber(),
+                        f.getName(),
+                        Integer.toString(maxofficeDay),
+                        Integer.toString(presentdayc.get()),
                         durationc.get().toHoursPart()+":"+ formatTwoDigit(durationc.get().toMinutesPart()),
                         Integer.toString(leavedayc.get()),
                         Integer.toString(absentdayc.get()),

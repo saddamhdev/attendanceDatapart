@@ -658,14 +658,16 @@ public class AttendanceService {
             data.ifPresent(view -> {
                 view.setUpdateStatus("0");
                 attendanceDataRepository.save(view);
-                Optional<OfficeDayCal> officeDayCalOptional = officeDayCalRepository.findByEntryDate(view.getEntryDate());
+                Optional<OfficeDayCal> officeDayCalOptional = officeDayCalRepository.findByDate(view.getEntryDate());
                 if(officeDayCalOptional.isPresent()) {
                     OfficeDayCal officeDayCal = officeDayCalOptional.get();
                     officeDayCal.setStatus(view.getGlobalDayStatus());
                     officeDayCalRepository.save(officeDayCal);
                 }else{
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDate date = LocalDate.parse(view.getEntryDate(), formatter);
                     officeDayCalRepository.save(new OfficeDayCal(view.getMonth(),view.getYear(),
-                            view.getEntryDate(),view.getGlobalDayStatus()));
+                           view.getEntryDate(),date ,view.getGlobalDayStatus()));
                 }
             });
 
@@ -694,14 +696,16 @@ public class AttendanceService {
             );
 
             attendanceDataRepository.save(attendanceData);
-            Optional<OfficeDayCal> officeDayCalOptional = officeDayCalRepository.findByEntryDate(attendanceData.getEntryDate());
+            Optional<OfficeDayCal> officeDayCalOptional = officeDayCalRepository.findByDate(attendanceData.getEntryDate());
             if(officeDayCalOptional.isPresent()) {
                 OfficeDayCal officeDayCal = officeDayCalOptional.get();
                 officeDayCal.setStatus(attendanceData.getGlobalDayStatus());
                 officeDayCalRepository.save(officeDayCal);
             }else{
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate date = LocalDate.parse( attendanceData.getEntryDate(), formatter);
                 officeDayCalRepository.save(new OfficeDayCal(attendanceData.getMonth(),attendanceData.getYear(),
-                        attendanceData.getEntryDate(),attendanceData.getGlobalDayStatus()));
+                       attendanceData.getEntryDate(),date,attendanceData.getGlobalDayStatus()));
             }
         });
 

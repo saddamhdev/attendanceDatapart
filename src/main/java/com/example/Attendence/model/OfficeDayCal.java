@@ -2,6 +2,8 @@ package com.example.Attendence.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
+
 @Document(collection = "OfficeDayCal")
 public class OfficeDayCal {
     @Id
@@ -9,15 +11,17 @@ public class OfficeDayCal {
 
      String month;
      String year;
-     String Status;
-     String entryDate;
+     String status;
+     String date;
+     LocalDate entryDate;
     public OfficeDayCal() {
     }
-    public OfficeDayCal(String month, String year,String entryDate, String status) {
+    public OfficeDayCal(String month, String year,String date,LocalDate entryDate, String status) {
         this.month = month;
         this.year = year;
+        this.date = date;
         this.entryDate = entryDate;
-        Status = status;
+        this.status = status;
     }
 
     public String getId() {
@@ -40,16 +44,22 @@ public class OfficeDayCal {
     }
     public String getStatus() {
 
-        return Status;
+        return status;
     }
     public void setStatus(String status) {
-        Status = status;
+        status = status;
+    }
+    public String getDate() {
+        return date;
+    }
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getEntryDate() {
+    public LocalDate getEntryDate() {
         return entryDate;
     }
-    public void setEntryDate(String entryDate) {
+    public void setEntryDate(LocalDate entryDate) {
         this.entryDate = entryDate;
     }
 
@@ -59,8 +69,9 @@ public class OfficeDayCal {
                 "id='" + id + '\'' +
                 ", month='" + month + '\'' +
                 ", year='" + year + '\'' +
-                ", Status='" + Status + '\'' +
-                ", entryDate='" + entryDate + '\'' +
+                ", status='" + status + '\'' +
+                ", date='" + date + '\'' +
+                ", entryDate=" + entryDate +
                 '}';
     }
 }

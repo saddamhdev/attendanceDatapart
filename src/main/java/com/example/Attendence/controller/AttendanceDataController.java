@@ -80,14 +80,14 @@ public class AttendanceDataController {
                     );
 
                     listData.add(attendanceData);
-                    Optional<OfficeDayCal> officeDayCalOptional = officeDayCalRepository.findByEntryDate(attendanceData.getEntryDate());
+                    Optional<OfficeDayCal> officeDayCalOptional = officeDayCalRepository.findByDate(attendanceData.getEntryDate());
                     if(officeDayCalOptional.isPresent()) {
                         OfficeDayCal officeDayCal = officeDayCalOptional.get();
                         officeDayCal.setStatus(attendanceData.getGlobalDayStatus());
                         officeDayCalRepository.save(officeDayCal);
                     }else{
                        officeDayCalRepository.save(new OfficeDayCal(attendanceData.getMonth(),attendanceData.getYear(),
-                               attendanceData.getEntryDate(),attendanceData.getGlobalDayStatus()));
+                              attendanceData.getEntryDate(), entryDate,attendanceData.getGlobalDayStatus()));
                     }
 
                 }
@@ -263,7 +263,19 @@ public class AttendanceDataController {
 
     @PostMapping("/exportAllAttendanceData")
     public void exportAllAttendanceData(@RequestBody List<AllEmployeeAttendanceData> attendanceData,HttpServletResponse response) {
-
+       /*  List<AttendanceData> allData= attendanceDataRepository.findByUpdateStatusAndEmployeeId("1","210534");
+         List<OfficeDayCal> value=new ArrayList<>();
+         allData.forEach(e->{
+             OfficeDayCal officeDayCal=new OfficeDayCal(
+                        e.getMonth(),
+                        e.getYear(),
+                        e.getEntryDate(),
+                        LocalDate.parse(e.getEntryDate()),
+                        e.getGlobalDayStatus()
+             );
+             value.add(officeDayCal);
+         });
+         officeDayCalRepository.saveAll(value);*/
         downloadService.exportAllAttendanceData(attendanceData,response);
     }
     @PostMapping("/exportSummaryAttendanceData")

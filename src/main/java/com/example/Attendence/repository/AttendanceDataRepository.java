@@ -14,6 +14,7 @@ public interface AttendanceDataRepository extends MongoRepository<AttendanceData
 
 
   List<AttendanceData> findByUpdateStatus(String updateStatus);
+  List<AttendanceData> findByUpdateStatusAndEmployeeId(String status, String employeeId);
   List<AttendanceData> findByEntryDateAndUpdateStatus(String entryDate,String updateStatus);
   Optional<AttendanceData> findByEmployeeIdAndEntryDateAndUpdateStatus(String employeeId, String entryDate, String updateStatus);
 
