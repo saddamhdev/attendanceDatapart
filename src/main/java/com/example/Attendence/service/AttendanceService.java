@@ -4,6 +4,7 @@ import com.example.Attendence.model.*;
 import com.example.Attendence.repository.AttendanceDataRepository;
 import com.example.Attendence.repository.GlobalSettingRepository;
 import com.example.Attendence.repository.LocalSettingRepository;
+import com.example.Attendence.repository.OfficeDayCalRepository;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.*;
@@ -44,7 +45,8 @@ public class AttendanceService {
     @Autowired
     private AttendanceDataRepository attendanceDataRepository;
 
-
+    @Autowired
+    private OfficeDayCalRepository officeDayCalRepository;
 
     /**
      * Polished Excel export:
@@ -656,7 +658,17 @@ public class AttendanceService {
             data.ifPresent(view -> {
                 view.setUpdateStatus("0");
                 attendanceDataRepository.save(view);
+                Optional<OfficeDayCal> officeDayCalOptional = officeDayCalRepository.findByEntryDate(view.getEntryDate());
+                if(officeDayCalOptional.isPresent()) {
+                    OfficeDayCal officeDayCal = officeDayCalOptional.get();
+                    officeDayCal.setStatus(view.getGlobalDayStatus());
+                    officeDayCalRepository.save(officeDayCal);
+                }else{
+                    officeDayCalRepository.save(new OfficeDayCal(view.getMonth(),view.getYear(),
+                            view.getEntryDate(),view.getGlobalDayStatus()));
+                }
             });
+
         });
 
         // Step 3: Save only changed records
@@ -682,6 +694,15 @@ public class AttendanceService {
             );
 
             attendanceDataRepository.save(attendanceData);
+            Optional<OfficeDayCal> officeDayCalOptional = officeDayCalRepository.findByEntryDate(attendanceData.getEntryDate());
+            if(officeDayCalOptional.isPresent()) {
+                OfficeDayCal officeDayCal = officeDayCalOptional.get();
+                officeDayCal.setStatus(attendanceData.getGlobalDayStatus());
+                officeDayCalRepository.save(officeDayCal);
+            }else{
+                officeDayCalRepository.save(new OfficeDayCal(attendanceData.getMonth(),attendanceData.getYear(),
+                        attendanceData.getEntryDate(),attendanceData.getGlobalDayStatus()));
+            }
         });
 
         return ResponseEntity.ok("Successfully Updated");

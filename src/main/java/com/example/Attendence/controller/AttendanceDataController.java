@@ -1,6 +1,7 @@
 package com.example.Attendence.controller;
 import com.example.Attendence.model.*;
 import com.example.Attendence.repository.AttendanceDataRepository;
+import com.example.Attendence.repository.OfficeDayCalRepository;
 import com.example.Attendence.service.AttendanceService;
 import com.example.Attendence.service.DownloadService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +28,8 @@ import java.util.stream.Collectors;
 public class AttendanceDataController {
     @Autowired
     private AttendanceDataRepository attendanceDataRepository;
-
+    @Autowired
+    private OfficeDayCalRepository officeDayCalRepository;
     @Autowired
     DownloadService downloadService;
 
@@ -78,6 +80,16 @@ public class AttendanceDataController {
                     );
 
                     listData.add(attendanceData);
+                    Optional<OfficeDayCal> officeDayCalOptional = officeDayCalRepository.findByEntryDate(attendanceData.getEntryDate());
+                    if(officeDayCalOptional.isPresent()) {
+                        OfficeDayCal officeDayCal = officeDayCalOptional.get();
+                        officeDayCal.setStatus(attendanceData.getGlobalDayStatus());
+                        officeDayCalRepository.save(officeDayCal);
+                    }else{
+                       officeDayCalRepository.save(new OfficeDayCal(attendanceData.getMonth(),attendanceData.getYear(),
+                               attendanceData.getEntryDate(),attendanceData.getGlobalDayStatus()));
+                    }
+
                 }
                 else{
                     // System.out.println("Already inserted bro");
