@@ -1,6 +1,7 @@
 package com.example.Attendence.controller;
 import com.example.Attendence.model.*;
 import com.example.Attendence.repository.AttendanceDataRepository;
+import com.example.Attendence.repository.LocalSettingRepository;
 import com.example.Attendence.repository.OfficeDayCalRepository;
 import com.example.Attendence.service.AttendanceService;
 import com.example.Attendence.service.DownloadService;
@@ -35,6 +36,8 @@ public class AttendanceDataController {
 
     @Autowired
     AttendanceService attendanceService;
+    @Autowired
+    private LocalSettingRepository localSettingRepository;
 
     @PostMapping("/insert")
     public ResponseEntity<?> insertAttendance(@RequestBody List<Map<String, Object>> attendanceList) {
@@ -293,7 +296,21 @@ public class AttendanceDataController {
 
         return attendanceService.updateAttendanceData(newData, oldData);
     }
+    @PostMapping("/updateAllAttendanceDataByEmployeeId")
+    public ResponseEntity<String>  updateAllAttendanceData(@RequestParam String oldEmployeeId, @RequestParam String newEmployeeId) {
+        List<AttendanceData> attendanceDataList = attendanceDataRepository.findByEmployeeId(oldEmployeeId);
+        for (AttendanceData attendanceData : attendanceDataList) {
+            attendanceData.setEmployeeId(newEmployeeId);
+        }
+        attendanceDataRepository.saveAll(attendanceDataList);
+        List<LocalSetting> localSettingList = localSettingRepository.findByEmployeeId(oldEmployeeId);
+        for (LocalSetting localSetting : localSettingList) {
+            localSetting.setEmployeeId(newEmployeeId);
+        }
+        localSettingRepository.saveAll(localSettingList);
+        return ResponseEntity.ok("Successfully updated "+ attendanceDataList.size() + " attendance records and " + localSettingList.size() + " local settings.");
 
+    }
 
 
 

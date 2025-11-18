@@ -14,6 +14,7 @@ public interface LocalSettingRepository extends MongoRepository<LocalSetting, St
     List<LocalSetting> findAllByStatus(String status);
     // Find entry by ID
      Optional<LocalSetting> findById(String id);
+     List<LocalSetting> findByEmployeeId(String employeeId);
     // Find entry by ID and status
     Optional<LocalSetting> findByIdAndStatus(String id, String status);
 
