@@ -84,14 +84,14 @@ public class DownloadService {
     public List<AttendanceDataForFixedDay> getAllEmployeeAttendanceDataForFixedDay(String selectedDate,String header){
         List <AttendanceDataForFixedDay> resultlist=new ArrayList<>();
         List<AttendanceData> dataList=attendanceDataRepository.findByEntryDateAndUpdateStatus(selectedDate,"1");
-        System.out.println(selectedDate);
-        dataList.forEach(System.out::println);
+       // System.out.println(selectedDate);
+       // dataList.forEach(System.out::println);
         employeeList=userService.employeeList(header);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
         employeeList.forEach(user->{
             dataList.forEach(data->{
 
-                if (user.getName().equals(data.getName()) && user.getIdNumber().equals(data.getEmployeeId())) {
+                if (user.getName().trim().equals(data.getName().trim()) && user.getIdNumber().equals(data.getEmployeeId())) {
                     // Your logic here
                     AttendanceDataForFixedDay view=new AttendanceDataForFixedDay(
                             selectedDate,
@@ -116,6 +116,7 @@ public class DownloadService {
                     resultlist.add(view);
 
                 }
+
 
             });
         });
