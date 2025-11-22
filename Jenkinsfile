@@ -89,11 +89,11 @@ pipeline {
 
                         sh 'echo "Restarting app on VPS..."'
 
-                        // 1. Kill old process
-                        sh '''
-                            sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no ${PROD_USER}@${PROD_HOST} \
-                            pkill -f "icsQuizUserService" || echo no-process
-                        '''
+                        // 1. Kill old process on port
+                            sh '''
+                                sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no ${PROD_USER}@${PROD_HOST} \
+                                "lsof -ti:${PORT} | xargs -r kill -9 || echo no-process"
+                            '''
 
                         // 2. Fix directory permissions BEFORE starting app
                         sh '''
@@ -132,10 +132,10 @@ SCRIPT
                         '''
 
                         // 5. Confirm running
-                        sh '''
-                            sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no ${PROD_USER}@${PROD_HOST} \
-                            "lsof -ti:${PORT} && echo '✅ Process started on port ${PORT}' || echo '❌ No process on port ${PORT}'"
-                        '''
+                            sh '''
+                                sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no ${PROD_USER}@${PROD_HOST} \
+                                "lsof -ti:${PORT} && echo '✅ Process started on port ${PORT}' || echo '❌ No process on port ${PORT}'"
+                            '''
 
                         // 6. Display last lines of log
                         sh '''
